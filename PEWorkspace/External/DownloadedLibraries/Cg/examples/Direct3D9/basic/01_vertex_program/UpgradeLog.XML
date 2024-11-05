@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="01_vertex_program_2005">
+</Property><Property Name="Solution File" Value="F:\Projects\csci499\MainDev\PEWorkspace\3rdPartyLibs\Cg\examples\Direct3D9\basic\01_vertex_program\01_vertex_program_2005.sln">
+</Property><Property Name="Date" Value="Friday, November 16, 2012">
+</Property><Property Name="Time" Value="15:30:22 PM">
+</Property></Properties><Event ErrorLevel="2" Project="01_vertex_program_2005" Source="01_vertex_program_2005.vcproj" Description="The project file 'F:\Projects\csci499\MainDev\PEWorkspace\3rdPartyLibs\Cg\examples\Direct3D9\basic\01_vertex_program\01_vertex_program_2005.vcproj' cannot be updated to this Visual Studio 2008 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event></UpgradeLog>

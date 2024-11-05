@@ -1,0 +1,386 @@
+#ifndef APIAbstraction_gpu
+#define APIAbstraction_gpu
+
+#ifndef APIABSTRACTION_D3D11 // passed in by code
+#	define APIABSTRACTION_D3D11 0
+#endif
+
+#ifndef APIABSTRACTION_D3D9 // passed in by code
+#	define APIABSTRACTION_D3D9 0
+#endif
+
+#ifndef APIABSTRACTION_X360 // passed in by code
+#	define APIABSTRACTION_X360 0
+#endif
+
+#ifndef APIABSTRACTION_IOS  // passed in by code
+#	define APIABSTRACTION_IOS 0
+#endif
+
+#ifndef APIABSTRACTION_PSVITA  // passed in by compiler
+#	define APIABSTRACTION_PSVITA 0
+#endif
+
+#ifndef APIABSTRACTION_PS4  // passed in by compiler
+#	define APIABSTRACTION_PS4 0
+#endif
+
+#ifndef APIABSTRACTION_GLPC
+#	define APIABSTRACTION_GLPC 0
+#endif
+
+//todo: figure out a way to feed defines into ps3 compilation
+#define APIABSTRACTION_PS3 0
+
+#if (APIABSTRACTION_IOS || APIABSTRACTION_GLPC || APIABSTRACTION_PS3) || (!APIABSTRACTION_D3D9 && !APIABSTRACTION_D3D11)
+#	define APIABSTRACTION_OGL 1
+#endif
+
+#ifndef APIABSTRACTION_OGL
+#	define APIABSTRACTION_OGL 0
+#endif
+
+#ifndef APIABSTRACTION_PS3
+#	define APIABSTRACTION_PS3 0
+#endif
+
+#if APIABSTRACTION_IOS
+
+#define float4 mediump vec4
+#define make_float4 vec4
+
+#define float3 mediump vec3
+#define make_float3 vec3
+
+#define float2 mediump vec2
+#define make_float2 vec2
+
+#define float mediump float
+#define matrix mediump mat4
+#define Matrix mediump mat4
+#define float3x3 mediump mat3
+#define make_float3x3 mat3
+
+#else
+
+#define make_float4 float4
+#define make_float3 float3
+#define make_float2 float2
+#define make_float3x3 float3x3
+
+#endif
+
+
+#if APIABSTRACTION_IOS
+
+    #define max(a,b) ((a) > (b) ? (a) : (b))
+
+    #define API_SEMANTIC(s)
+
+    #define mul(a, b) ((a) * (b))
+
+    #define lerp(a, b, t) ((a) + ((b)-(a))*(t))
+    #define frac(a) fract((a))
+    
+    #define clip(exp) if (exp <= 0.0) discard;
+
+    #define PS_RETURN_COLOR(c)  gl_FragColor = (c);
+
+	
+#else
+    #define API_SEMANTIC(s) : s
+
+    #define PS_RETURN_COLOR(c)  return (c);
+#endif
+
+#ifndef APIABSTRACTION_D3D11
+#define APIABSTRACTION_D3D11 0
+#endif
+
+#ifndef APIABSTRACTION_D3D9
+#define APIABSTRACTION_D3D9 0
+#endif
+
+
+#if APIABSTRACTION_D3D11
+	#define BEGIN_BUFFER_D3D11(id) \
+		cbuffer cbPerFrame: register(b ## id) {
+
+	#define BEGIN_BUFFER BEGIN_BUFFER_D3D11(API_BUFFER_INDEX)
+	
+	#define END_BUFFER \
+		};
+
+	#define API_UNIFORM_CONSTANT
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister) : packoffset(c ## localReg)
+
+	#define SAMPLER_REGISTER(id) : register(s ## id)
+
+#elif APIABSTRACTION_PSVITA
+
+	#define BEGIN_BUFFER
+		
+	#define END_BUFFER 
+
+	#define API_UNIFORM_CONSTANT uniform
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister) : BUFFER[API_BUFFER_INDEX]
+
+	#define SAMPLER_REGISTER(id) : TEXUNIT ## id
+
+#elif APIABSTRACTION_PS4
+
+	#define BEGIN_BUFFER
+		
+	#define END_BUFFER 
+
+	#define API_UNIFORM_CONSTANT
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister)
+
+	#define SAMPLER_REGISTER(id) : register(s ## id)
+
+#elif APIABSTRACTION_D3D9
+
+	#define BEGIN_BUFFER // don't do anything for d3d9. will use absoulte registers
+
+	#define END_BUFFER
+
+	#define API_UNIFORM_CONSTANT
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister) : register(c ## absRegister)
+
+	#define SAMPLER_REGISTER(id)  : register(s ## id)
+
+#elif APIABSTRACTION_IOS
+
+	#define BEGIN_BUFFER
+
+	#define END_BUFFER
+
+	#define API_UNIFORM_CONSTANT uniform
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister)
+
+	#define SAMPLER_REGISTER(id)
+
+#else
+
+	#define BEGIN_BUFFER
+
+	#define END_BUFFER
+
+	#define API_UNIFORM_CONSTANT
+
+	#define API_UNIFORM_CONSTANT_REGISTER_REG(localReg, absRegister)
+
+	#define SAMPLER_REGISTER(id)
+
+#endif
+
+
+
+#if APIABSTRACTION_PSVITA
+#define API_NOSTRIP __nostrip
+#else
+#define API_NOSTRIP
+#endif
+
+/************************************************
+* SEMANTICS
+************************************************/
+
+// Vertex Shader
+
+
+
+#if APIABSTRACTION_D3D11
+
+#define VSIN_POSITION POSITION
+#define VSIN_TANGENT TANGENT
+
+#elif APIABSTRACTION_D3D9
+
+#define VSIN_POSITION POSITION
+#define VSIN_TANGENT TANGENT
+
+#elif APIABSTRACTION_PSVITA
+
+#define VSIN_POSITION POSITION
+#define VSIN_TANGENT TANGENT
+
+#elif APIABSTRACTION_PS4
+
+#define VSIN_POSITION POSITION
+#define VSIN_TANGENT TANGENT
+
+#else // CG GL
+
+#define VSIN_POSITION POSITION
+#define VSIN_TANGENT TEXCOORD1
+
+#endif
+
+
+
+
+
+#if APIABSTRACTION_D3D11
+#	define VSIN_INSTANCEID SV_InstanceID
+#else
+#	define VSIN_INSTANCEID POSITION
+#endif
+
+
+
+
+
+#if APIABSTRACTION_D3D11
+#	define PIPELINE_POSITION SV_POSITION
+#elif APIABSTRACTION_D3D9
+#	define PIPELINE_POSITION POSITION0
+#else // CG GL
+#	define PIPELINE_POSITION POSITION
+#endif
+
+
+
+#if APIABSTRACTION_D3D11
+#	define PSIN_EXTRA_POSITION POSITION
+#elif APIABSTRACTION_D3D9
+#	define PSIN_EXTRA_POSITION TEXCOORD3
+#else // CG GL
+#	define PSIN_EXTRA_POSITION TEXCOORD3 // since in used post vs, can use it as vs input
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define PSIN_TANGENT TANGENT
+#elif APIABSTRACTION_D3D9
+#	define PSIN_TANGENT TANGENT
+#elif APIABSTRACTION_PSVITA
+#	define PSIN_TANGENT TEXCOORD1
+#else // CG GL
+#	define PSIN_TANGENT TEXCOORD1
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define PSIN_PROJECTION TEXCOORD1
+#elif APIABSTRACTION_D3D9
+#	define PSIN_PROJECTION TEXCOORD1
+#else // CG GL
+#	define PSIN_PROJECTION TEXCOORD4 // used only after VS, so we can use TEXCOORD4 as VS input for something else
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define VSIN_NORMAL NORMAL
+#elif APIABSTRACTION_D3D9
+#	define VSIN_NORMAL NORMAL
+#elif APIABSTRACTION_PSVITA
+#	define VSIN_NORMAL NORMAL
+#else // CG GL
+#	define VSIN_NORMAL TEXCOORD2
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define PIPELINE_NORMAL NORMAL
+#elif APIABSTRACTION_D3D9
+#	define PIPELINE_NORMAL NORMAL
+#elif APIABSTRACTION_PSVITA
+#	define PIPELINE_NORMAL TEXCOORD2
+#else // CG GL
+#	define PIPELINE_NORMAL TEXCOORD2
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define PSOUT_COLOR SV_Target
+#elif APIABSTRACTION_D3D9
+#	define PSOUT_COLOR SV_Target
+#elif APIABSTRACTION_PS4
+
+#else // CG GL
+#	define PSOUT_COLOR COLOR
+#endif
+ 
+
+#if APIABSTRACTION_D3D11
+	#define VSIN_COLOR COLOR
+#elif APIABSTRACTION_D3D9
+	#define VSIN_COLOR COLOR
+#elif APIABSTRACTION_PSVITA
+	#define VSIN_COLOR COLOR
+#else // CG GL
+	#define VSIN_COLOR COLOR
+#endif
+
+#if APIABSTRACTION_D3D11
+#	define PSIN_COLOR COLOR
+#elif APIABSTRACTION_D3D9
+#	define PSIN_COLOR COLOR
+#elif APIABSTRACTION_PSVITA
+	#define PSIN_COLOR COLOR
+#else // CG GL
+#	define PSIN_COLOR COLOR
+#endif
+
+#if APIABSTRACTION_D3D11
+#define VSIN_JOINTWEIGHTS0 JOINTWEIGHTS0
+#define VSIN_JOINTWEIGHTS1 JOINTWEIGHTS1
+#define VSIN_BONEINDICES0 JOINTINDICES0
+#define VSIN_BONEINDICES1 JOINTINDICES1
+#elif APIABSTRACTION_D3D9
+#define VSIN_JOINTWEIGHTS0 BLENDWEIGHT0
+#define VSIN_JOINTWEIGHTS1 BLENDWEIGHT1
+#define VSIN_BONEINDICES0 BLENDINDICES0
+#define VSIN_BONEINDICES1 BLENDINDICES1
+#elif APIABSTRACTION_PSVITA
+#define VSIN_JOINTWEIGHTS0 BLENDWEIGHT0
+#define VSIN_JOINTWEIGHTS1 BLENDWEIGHT1
+#define VSIN_BONEINDICES0 BLENDINDICES0
+#define VSIN_BONEINDICES1 BLENDINDICES1
+#else // CG GL, GL ES
+#define VSIN_JOINTWEIGHTS0 TEXCOORD3
+#define VSIN_JOINTWEIGHTS1 TEXCOORD4
+#define VSIN_BONEINDICES0 TEXCOORD5
+#define VSIN_BONEINDICES1 TEXCOORD6
+#endif
+
+#define DEFAULT_SKIN_WEIGHTS_PER_VERTEX 8
+
+#if APIABSTRACTION_IOS || APIABSTRACTION_PSVITA
+#define PE_VERTEX_ATTRS_BY_NAME 1
+#else
+#define PE_VERTEX_ATTRS_BY_NAME 0
+#endif
+
+#define NVIDIA_3D_VISION 0
+#if APIABSTRACTION_D3D11
+	#define PE_MAX_BONE_COUNT_IN_DRAW_CALL 128
+#else
+	#define PE_MAX_BONE_COUNT_IN_DRAW_CALL 16
+#endif
+
+#define PE_MAX_INSTANCE_COUNT_IN_DRAW_CALL (1280)
+#define PE_MAX_SKINED_INSTANCE_COUNT_IN_DRAW_CALL (1280) // should be <= PE_MAX_INSTANCE_COUNT_IN_DRAW_CALL
+#define PE_MAX_FRAMES_IN_ANIMATION (30)
+#define PE_MAX_ANIMATIONS_IN_BUFFER (16)
+
+#define PE_USE_COMPUTE_FOR_INSTANCED_ANIMS 1 // do we use compute at all to help with anims?
+
+#if PE_USE_COMPUTE_FOR_INSTANCED_ANIMS
+	#define PE_USE_COMPUTE_ANIMATION_REDUCE 1 // 0 or 1: 1 = read results from compute output, not cpu fed buffer
+	#if PE_USE_COMPUTE_ANIMATION_REDUCE
+		#define PE_STORE_CS_MAP_RESULT_AS_MATRIX 1
+	#endif
+#endif
+
+#ifndef PE_STORE_CS_MAP_RESULT_AS_MATRIX
+#define PE_STORE_CS_MAP_RESULT_AS_MATRIX 0
+#endif
+
+#ifndef PE_USE_COMPUTE_ANIMATION_REDUCE
+#define PE_USE_COMPUTE_ANIMATION_REDUCE 0
+#endif
+
+
+#endif

@@ -1,0 +1,52 @@
+#pragma once
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardInstancingConstants.fx"
+
+
+// Each group has 1024 threads, each thread is responsible for one particle
+[numthreads(PE_MAX_PARTICLE_PER_GROUP, 1, 1)]
+void main(uint3 Gid : SV_GroupID, uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID, uint GI : SV_GroupIndex)
+{
+    int pinpong = gGameFrame % 2;
+    
+    Particle p;
+    int index = GTid.x + Gid.x * PE_MAX_PARTICLE_PER_GROUP;
+    if (pinpong == 0)
+    {
+        p = gCSMapParticleTarget1UAV[index];
+    }
+    else
+    {
+        p = gCSMapParticleTarget2UAV[index];
+    }
+    
+    if (p.m_age < 0.0)
+    {
+        return;
+    }
+    
+    p.m_age += gGameTimes.y;
+    
+    if (p.m_age > p.m_lifetime)
+    {
+        // TODO reset age
+        return;
+    }
+    
+    p.m_velocity += p.m_acceleration * gGameTimes.y;
+    p.m_position += p.m_velocity * gGameTimes.y;
+    
+    uint originalIndex;
+    gIndirectDrawArgsUAV.InterlockedAdd(4, 1, originalIndex);
+    
+    if (pinpong == 0)
+    {
+        gCSMapParticleTarget2UAV[originalIndex] = p;
+    }
+    else
+    {
+        gCSMapParticleTarget1UAV[originalIndex] = p;
+    }
+}

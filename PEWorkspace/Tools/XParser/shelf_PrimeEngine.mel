@@ -1,0 +1,64 @@
+global proc shelf_PrimeEngine () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+
+
+        -align "center" 
+        -label "import cvxporter\r\ncvxporter = reload(cvxporter)\r\ncvxporter.xpars..." 
+        -labelOffset 0
+        -font "tinyBoldLabelFont" 
+        -imageOverlayLabel "Exporter" 
+
+
+        -image "pe_exporter_icon.bmp" 
+        -image1 "pe_exporter_icon.bmp" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import cvxporter\r\ncvxporter = reload(cvxporter)\r\ncvxporter.xparser = reload(cvxporter.xparser)\r\ncvxporter.xparser.xconv = reload(cvxporter.xparser.xconv)\r\ncvxporter.UI()\r\n" 
+        -sourceType "python" 
+        -actionIsSubstitute 0
+        -commandRepeatable 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 34
+        -height 34
+
+
+        -manage 1
+        -visible 1
+        -preventOverride 0
+
+
+        -align "center" 
+        -label "PyEngine Level" 
+        -labelOffset 0
+        -font "tinyBoldLabelFont" 
+        -imageOverlayLabel "Level" 
+
+
+        -image "pe_level_icon.bmp" 
+        -image1 "pe_level_icon.bmp" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "try:\r\n    loader.KillSelectionCheckerThread()\r\nexcept:\r\n    pass\r\nimport loader\r\nloader = reload(loader)\r\nloader.PyClient.assetmanagercommon = reload(loader.PyClient.assetmanagercommon)\r\nloader.LoaderUI()\r\n" 
+        -sourceType "python" 
+        -actionIsSubstitute 0
+        -commandRepeatable 1
+    ;
+
+} 

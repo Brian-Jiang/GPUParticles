@@ -1,0 +1,1 @@
+#include "SoldierNPCAnimationSM.cpp"

@@ -1,0 +1,40 @@
+LevelLoader.CreateGameObject("PEObject41_nazi_rep",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, 425.434305, 0.0, -57.174272, 1.0, 'lightingtest.x_PEObject41_nazi_.lua', 'Basic',0xc4859d61, 0x2c0f11e4, 0x9840b8e8, 0x560d92e3)
+
+LevelLoader.CreateGameObject("PEObject0_pkingTiger",-0.287603, 0.0, 0.95775, 0.0, 0.0, 1.0, -0.0, 0.0, -0.95775, -0.0, -0.287603, 0.0, 630.195783, 0.0, 948.383107, 1.0, 'lightingtest.x_PEObject0_pkingT.lua', 'Basic',0x44148bf0, 0x065c11e0, 0xacc3e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject36_TspotRep",-0.38739, -0.05219, 0.920437, 0.0, -0.087833, 0.995944, 0.019504, 0.0, -0.917722, -0.073289, -0.390403, 0.0, 593.296544, 73.21926, 135.042464, 1.0, 'lightingtest.x_PEObject36_Tspot.lua', 'Basic',0x3f283780, 0x214011e2, 0x87930025, 0xd3ac504f)
+
+LevelLoader.CreateGameObject("PEObject3_pPlane1",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, -2500.0, 0.0, -0.0, 1.0, 'lightingtest.x_PEObject3_pPlane.lua', 'Basic',0xc09c3b4f, 0x066611e0, 0xac2de0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject10_transf",0.840744, 0.0, 0.541433, 0.0, 0.0, 1.0, -0.0, 0.0, -0.541433, -0.0, 0.840744, 0.0, -747.501079, 0.0, -586.164501, 1.0, 'lightingtest.x_PEObject10_trans.lua', 'Basic',0x9251b640, 0x066f11e0, 0x83eee0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject9_pBrickApmtWithSpire_res5",0.002322, 0.0, 0.999997, 0.0, 0.0, 1.0, -0.0, 0.0, -0.999997, -0.0, 0.002322, 0.0, 416.463794, -18.098984, -1186.304923, 1.0, 'lightingtest.x_PEObject9_pBrick.lua', 'Basic',0xad92d270, 0x066c11e0, 0x8183e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject23_pBrokenPlane",0.989328, 0.119737, 0.083029, 0.0, -0.120151, 0.992756, -0.0, 0.0, -0.082427, -0.009976, 0.996547, 0.0, -316.069846, 121.377896, 208.9426, 1.0, 'lightingtest.x_PEObject23_pBrok.lua', 'Basic',0x8f35ebc0, 0x067911e0, 0x94d2e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject2_pPlane1",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, 0.0, 0.0, -0.0, 1.0, 'lightingtest.x_PEObject2_pPlane.lua', 'Basic',0xa0a3ae61, 0x066511e0, 0x9ac2e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject17_transf",-0.057368, 0.0, -0.998353, 0.0, -0.0, 1.0, -0.0, 0.0, 0.998353, 0.0, -0.057368, 0.0, -772.793758, 0.0, 2300.444957, 1.0, 'lightingtest.x_PEObject17_trans.lua', 'Basic',0xc2baca00, 0x067011e0, 0xaf56e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject4_pkingTiger",0.347325, 0.0, 0.937745, 0.0, 0.0, 1.0, -0.0, 0.0, -0.937745, -0.0, 0.347325, 0.0, 487.076421, 0.0, -571.531785, 1.0, 'lightingtest.x_PEObject4_pkingT.lua', 'Basic',0x2e6dc99e, 0x066711e0, 0x8615e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject15_transf",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, -1212.865113, 0.0, 686.569126, 1.0, 'lightingtest.x_PEObject15_trans.lua', 'Basic',0x86aaa8f0, 0x067011e0, 0x9bc7e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject8_pBrickApmtWithSpire_res5",0.000384, 0.0, 1.0, 0.0, 0.0, 1.0, -0.0, 0.0, -1.0, -0.0, 0.000384, 0.0, 1949.820113, -12.83464, -1465.824197, 1.0, 'lightingtest.x_PEObject8_pBrick.lua', 'Basic',0x990d86b0, 0x066c11e0, 0xaa11e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject35_polySurface1",0.729609, 0.451813, 0.513358, 0.0, -0.671161, 0.329064, 0.664274, 0.0, 0.1312, -0.829206, 0.543327, 0.0, 0.0, 0.0, -0.0, 1.0, 'lightingtest.x_PEObject35_polyS.lua', 'Basic',0x953e71cf, 0x213f11e2, 0xa90e0025, 0xd3ac504f)
+
+LevelLoader.CreateGameObject("PEObject28_TImrod",-0.993078, 0.0, 0.117458, 0.0, 0.0, 1.0, -0.0, 0.0, -0.117458, -0.0, -0.993078, 0.0, 480.189417, 476.995393, -1182.513275, 1.0, 'lightingtest.x_PEObject28_TImro.lua', 'Basic',0xb977f500, 0x067d11e0, 0x90b4e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject30_TImrod",-0.325685, -0.029017, 0.945033, 0.0, -0.020146, 0.999515, 0.023747, 0.0, -0.945264, -0.011304, -0.326112, 0.0, 116.103515, 0.0, 31.864191, 1.0, 'lightingtest.x_PEObject30_TImro.lua', 'Basic',0x1fd0bdae, 0x074011e0, 0xa378e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject16_transf",0.78938, 0.0, -0.613904, 0.0, -0.0, 1.0, -0.0, 0.0, 0.613904, 0.0, 0.78938, 0.0, -1958.42799, 0.0, 1759.639659, 1.0, 'lightingtest.x_PEObject16_trans.lua', 'Basic',0x9a9429e1, 0x067011e0, 0xb96be0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject21_pCar",0.10955, 0.579763, 0.807387, 0.0, -0.07795, 0.814785, -0.574499, 0.0, -0.99092, 0.0, 0.134452, 0.0, -396.358005, 54.533435, -65.622424, 1.0, 'lightingtest.x_PEObject21_pCar.lua', 'Basic',0x4c292811, 0x067911e0, 0xa0c4e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject20_pPlane1",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, -2500.0, 0.0, 2500.0, 1.0, 'lightingtest.x_PEObject20_pPlan.lua', 'Basic',0xec74180f, 0x067011e0, 0x9dfae0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject19_pPlane1",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, 0.0, 0.0, 2500.0, 1.0, 'lightingtest.x_PEObject19_pPlan.lua', 'Basic',0xe32261de, 0x067011e0, 0x9c60e0cb, 0x4e992d74)
+
+LevelLoader.CreateGameObject("PEObject18_transf",-0.029877, 0.0, -0.999554, 0.0, -0.0, 1.0, -0.0, 0.0, 0.999554, 0.0, -0.029877, 0.0, 649.164975, 0.0, 2227.464206, 1.0, 'lightingtest.x_PEObject18_trans.lua', 'Basic',0xd015fa80, 0x067011e0, 0xa274e0cb, 0x4e992d74)
+

@@ -1,0 +1,25 @@
+#ifndef ColoredMinimalMesh_VS_cg
+#define ColoredMinimalMesh_VS_cg
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "ColoredMinimalMesh_Structs.fx"
+
+COLORED_MINIMAL_MESH_PS_IN ColoredMinimalMesh_VS(COLORED_MINIMAL_MESH_VS_IN vIn)
+{
+    COLORED_MINIMAL_MESH_PS_IN vOut;
+    vOut.iPosH = mul(make_float4(vIn.iPosL, 1.0), gWVP);
+    vOut.iPosW =  mul(make_float4(vIn.iPosL, 1.0), gW).xyz;
+    vOut.iColor = vIn.iColor;
+    
+//     vOut.iPosH = make_float4(vIn.iPosL.xy, 0, 1.0);
+//     vOut.iPosH = mul(make_float4(vIn.iPosL, 1.0), gW);
+//     //vOut.iNormalW = vIn.iNormal;
+//     vOut.iPosW =  vIn.iPosL;
+    
+    return vOut;
+}
+
+VS_wrapper_COLORED_MINIMAL_MESH(ColoredMinimalMesh_VS)
+
+#endif

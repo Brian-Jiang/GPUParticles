@@ -1,0 +1,21 @@
+#ifndef StdMesh_ZOnly_VS_cgvs
+#define StdMesh_ZOnly_VS_cgvs
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "DetailedMesh_Structs.fx"
+
+DETAILED_MESH_PS_IN DetailedMesh_ZOnly_VS(DETAILED_MESH_VS_IN vIn)
+{
+    DETAILED_MESH_PS_IN vOut;
+    vOut.iPosH = mul(make_float4(vIn.iPosL, 1.0), gWVP);
+    vOut.iNormalW =  mul(make_float4(vIn.iNormal, 0.0), gW).xyz;
+    vOut.iPosW =  mul(make_float4(vIn.iPosL, 1.0), gW).xyz;
+    vOut.iTangentW = make_float3(0,0,0); // mul(make_float4(vIn.iTangent, 1.0), gW).xyz; // no need for this line in zonly version
+    vOut.iTexCoord.xy = vOut.iPosH.zw;
+    return vOut;
+}
+
+VS_wrapper_DETAILED_MESH(DetailedMesh_ZOnly_VS)
+
+#endif

@@ -1,0 +1,75 @@
+#ifndef SampleWorkspace_ColoredMinimalMesh_MotionBlur_PS_cgps_h
+#define SampleWorkspace_ColoredMinimalMesh_MotionBlur_PS_cgps_h
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardTextureResources.fx"
+#include "samplerhelper.fx"
+#include "lighthelper.fx"
+#include "blurhelper.fx"
+#include "ColoredMinimalMesh_Structs.fx"
+
+float4 ColoredMinimalMesh_MotionBlur_PS(COLORED_MINIMAL_MESH_PS_IN pIn)
+{
+#if 1 // set to 0 to render gametime color
+	
+	// Get the initial color at this pixel.
+	float4 color = sample2D(gDiffuseMapSampler, pIn.iColor.xy, gDiffuseMap);
+	
+	float4 original = color;
+#if 0 // disable motion blur. to enable get depth map generated and passed into shaders
+	// Get the depth buffer value at this pixel.
+	
+	float realZOverW = sample2D(gDepthMapSampler, pIn.iColor.xy, gDepthMap).r;
+	float zOverW = 0.999f;
+	// H is the viewport position at this pixel in the range -1 to 1.
+	float4 H = make_float4(pIn.iColor.x * 2 - 1, (1 - pIn.iColor.y) * 2 - 1, zOverW, 1);
+	// Transform by the view-projection inverse.
+	float4 D = mul(H, gViewProjInverseMatrix);
+	// Divide by w to get the world position.
+	float4 worldPos = D / D.w;
+	
+	// Current viewport position
+	float4 currentPos = H;
+	// Use the world position, and transform by the previous view-projection matrix.
+	float4 previousPos = mul(worldPos, gPreviousViewProjMatrix);
+	// Convert to nonhomogeneous points [-1,1] by dividing by w.
+	previousPos /= previousPos.w;
+	// Use this frame's position and last frame's to compute the pixel
+	// velocity.
+	float2 velocity = (previousPos - currentPos)/60.f;
+		
+	float g_numSamples = 1;
+	
+	pIn.iColor.xy += velocity;
+	
+	for(int i = 1; i < 7; ++i, pIn.iColor.xy += velocity)
+	{
+		// Sample the color buffer along the velocity vector.
+		float4 currentColor = sample2D(gDiffuseMapSampler, pIn.iColor.xy, gDiffuseMap);
+		// Add the current color to our color sum.
+		color += currentColor;
+	}
+	// Average all of the samples to get the final blur color.
+	color = color / (7);
+
+	if (xyzgEyePosW_wDoMotionBlur.w > 0.1 && dot(velocity, velocity) > 0.000000001f)
+	{
+		// add smaples only if are moving
+		// g_numSamples = 7;
+		original = color;
+	}
+#endif
+	return original;
+#else
+	#if APIABSTRACTION_D3D11 || APIABSTRACTION_D3D9
+		return make_float4( (gGameTimes.x % 1.0f) , 0.0f, 0, 1.0f);
+	#else
+		return make_float4( (mod(gGameTimes.x, 1.0f)) , 0.0f, 0, 1.0f);
+	#endif
+#endif
+}
+
+PS_wrapper_COLORED_MINIMAL_MESH(ColoredMinimalMesh_MotionBlur_PS)
+
+#endif

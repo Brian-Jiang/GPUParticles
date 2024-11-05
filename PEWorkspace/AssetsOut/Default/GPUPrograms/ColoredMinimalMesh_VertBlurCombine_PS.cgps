@@ -1,0 +1,58 @@
+#ifndef SampleWorkspace_ColoredMinimalMesh_VerticalBlurAndCombine_PS_cgps_h
+#define SampleWorkspace_ColoredMinimalMesh_VerticalBlurAndCombine_PS_cgps_h
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardTextureResources.fx"
+#include "samplerhelper.fx"
+#include "lighthelper.fx"
+#include "blurhelper.fx"
+#include "ColoredMinimalMesh_Structs.fx"
+
+float4 ColoredMinimalMesh_VerticalBlurAndCombine_PS(COLORED_MINIMAL_MESH_PS_IN pIn)
+{
+#if !NVIDIA_3D_VISION
+
+#if APIABSTRACTION_IOS // doesnt allow const arrays..
+float BlurWeights[13];
+BlurWeights[0] = bw0;
+BlurWeights[1] = bw1;
+BlurWeights[2] = bw2;
+BlurWeights[3] = bw3;
+BlurWeights[4] = bw4;
+BlurWeights[5] = bw5;
+BlurWeights[6] = bw6;
+BlurWeights[7] = bw7;
+BlurWeights[8] = bw8;
+BlurWeights[9] = bw9;
+BlurWeights[10] = bw10;
+BlurWeights[11] = bw11;
+BlurWeights[12] = bw12;
+#endif
+
+	float4 diffuse = sample2D(gBlurredGlowMapSampler, pIn.iColor.xy, gHorizontallyBlurredGlowMap);
+	
+	float3 glow = make_float3(0.0, 0.0, 0.0);
+	float2 neighbor = pIn.iColor.xy + make_float2(0.0, -6.0 * MAP_DY);
+	for(int i = 0; i < 13; i++){
+		float4 neighborDiffuse = sample2D(gBlurredGlowMapSampler, neighbor, gHorizontallyBlurredGlowMap);
+		neighbor.y += MAP_DY;
+		glow += neighborDiffuse.xyz * BlurWeights[i];
+	}
+	
+	diffuse = make_float4(glow, 1.0);
+	
+	// need to add it to the source texture (with no glow)
+	float4 srcDiffuse = sample2D(gDiffuseMapSampler, pIn.iColor.xy, gDiffuseMap);
+	
+	return srcDiffuse + diffuse;
+	
+#else
+	float4 srcDiffuse = sample2D(gDiffuseMapSampler, pIn.iColor.xy, gDiffuseMap);
+	return srcDiffuse;
+#endif	
+}
+
+PS_wrapper_COLORED_MINIMAL_MESH(ColoredMinimalMesh_VerticalBlurAndCombine_PS)
+
+#endif

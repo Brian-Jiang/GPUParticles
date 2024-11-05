@@ -1,0 +1,28 @@
+#ifndef SampleWorkspace_StdMesh_Diffuse_A_RGBIntensity_PS_cgps_h
+#define SampleWorkspace_StdMesh_Diffuse_A_RGBIntensity_PS_cgps_h
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardTextureResources.fx"
+#include "samplerhelper.fx"
+#include "lighthelper.fx"
+#include "StdMesh_Structs.fx"
+
+
+float4 StdMesh_Diffuse_A_RGBIntensity_PS(STD_MESH_PS_IN pIn)
+{
+	//return make_float4(1.0, 0, 0, 1);
+	float r = sample2D(gDiffuseMapSampler, pIn.iTexCoord, gDiffuseMap).r;
+	float4 combinedColor = make_float4(r,r,r,r);
+	combinedColor.a = (combinedColor.r + combinedColor.g + combinedColor.b) * 0.33333333333;
+	
+    clip(combinedColor.a - 0.1);
+    
+    combinedColor.a = 0.0;
+
+    return combinedColor;
+}
+
+PS_wrapper_STD_MESH(StdMesh_Diffuse_A_RGBIntensity_PS)
+
+#endif

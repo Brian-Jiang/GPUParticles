@@ -1,0 +1,2 @@
+LevelLoader.CreateGameObject("PEObject0_polySurface1",1.0, 0.0, 0.0, 0.0, -0.0, 0.0, 1.0, 0.0, -0.0, -1.0, 0.0, 0.0, 0.0, 0.0, -0.0, 1.0, 'basic.x_PEObject0_polySu.lua', 'Basic',0x7255d18f, 0x36cc11e0, 0xb5aa0025, 0xd3ac504f)
+

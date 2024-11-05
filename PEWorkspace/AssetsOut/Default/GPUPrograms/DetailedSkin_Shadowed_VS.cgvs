@@ -1,0 +1,83 @@
+#ifndef DETAILEDMESH_VS_cg
+#define DETAILEDMESH_VS_cg
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "DetailedSkin_Structs.fx"
+
+
+DETAILED_MESH_SHADOWED_PS_IN DetailedSkin_Shadowed_VS(DETAILED_SKIN_VS_IN vIn)
+{
+	DETAILED_MESH_SHADOWED_PS_IN vOut;
+
+	#if 0
+	float3 pos = vIn.iPosL;
+	vOut.iPosH = mul(make_float4(pos, 1.0), gWVP);
+	vOut.iNormalW = mul(make_float4(vIn.iNormal, 0), gW).xyz;
+	vOut.iPosW =  mul(make_float4(pos, 1.0), gW).xyz;
+	vOut.iTangentW = mul(make_float4(vIn.iTangent, 1.0), gW).xyz;
+	vOut.iTexCoord = vIn.iTexCoord;
+    vOut.iProjTexCoord = mul(make_float4(vOut.iPosW, 1.0), gLightWVP);
+
+	return vOut;
+	#else
+
+	float4 position = make_float4(vIn.iPosL, 1.0) ;
+	float4 normal = make_float4(vIn.iNormal, 0.0);
+	float4 tangent = make_float4(vIn.iTangent, 0.0);
+	
+	float4 result = make_float4(0,0,0,0);
+	float4 normResult = make_float4(0,0,0,0);
+	float4 tangResult = make_float4(0,0,0,0);
+
+	result += vIn.jointWeights.x * mul(position, gJoints[int(vIn.jointIndices.x)]);
+	normResult += vIn.jointWeights.x * mul(normal, gJoints[int(vIn.jointIndices.x)]);
+	tangResult += vIn.jointWeights.x * mul(tangent, gJoints[int(vIn.jointIndices.x)]);
+	
+	if (vIn.jointIndices.y > -0.5){
+		result += vIn.jointWeights.y * mul(position, gJoints[int(vIn.jointIndices.y)]);
+		normResult += vIn.jointWeights.y * mul(normal, gJoints[int(vIn.jointIndices.y)]);
+		tangResult += vIn.jointWeights.y * mul(tangent, gJoints[int(vIn.jointIndices.y)]);
+	}
+
+	if (vIn.jointIndices.z > -0.5){
+		result += vIn.jointWeights.z * mul(position, gJoints[int(vIn.jointIndices.z)]);
+		normResult += vIn.jointWeights.z * mul(normal, gJoints[int(vIn.jointIndices.z)]);
+		tangResult += vIn.jointWeights.z * mul(tangent, gJoints[int(vIn.jointIndices.z)]);
+	}
+	
+	if (vIn.jointIndices.w > -0.5){
+		result += vIn.jointWeights.w * mul(position, gJoints[int(vIn.jointIndices.w)]);
+		normResult += vIn.jointWeights.w * mul(normal, gJoints[int(vIn.jointIndices.w)]);
+		tangResult += vIn.jointWeights.w * mul(tangent, gJoints[int(vIn.jointIndices.w)]);
+	}
+	
+	#if DEFAULT_SKIN_WEIGHTS_PER_VERTEX == 8
+		if (vIn.jointIndices1.x > -0.5){
+			result += vIn.jointWeights1.x * mul(position, gJoints[int(vIn.jointIndices1.x)]);
+			normResult += vIn.jointWeights1.x * mul(normal, gJoints[int(vIn.jointIndices1.x)]);
+			tangResult += vIn.jointWeights1.x * mul(tangent, gJoints[int(vIn.jointIndices1.x)]);
+		}
+	#endif
+
+	Matrix WVP = gWVP;
+	vOut.iPosH = mul(result, gWVP);
+
+	Matrix W = gW;
+	
+	vOut.iPosW =  mul(result, W).xyz;
+	
+	normResult = normalize(normResult);
+	tangResult = normalize(tangResult);
+	vOut.iNormalW =  mul(normResult, W).xyz;
+	vOut.iTangentW = mul(tangResult, W).xyz;
+	#endif
+    vOut.iTexCoord = vIn.iTexCoord;
+    vOut.iProjTexCoord = mul(make_float4(vOut.iPosW, 1.0), gLightWVP);
+    
+    return vOut;
+}
+
+VS_wrapper_DETAILED_SKIN_SHADOWED(DetailedSkin_Shadowed_VS)
+
+#endif

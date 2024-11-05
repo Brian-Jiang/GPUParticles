@@ -1,0 +1,20 @@
+#ifndef StdMesh_VS_cg
+#define StdMesh_VS_cg
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StdMesh_Structs.fx"
+
+STD_MESH_PS_IN StdMesh_VS(STD_MESH_VS_IN vIn)
+{
+    STD_MESH_PS_IN vOut;
+    vOut.iPosH = mul(make_float4(vIn.iPosL, 1.0), gWVP);
+    vOut.iNormalW =  mul(make_float4(vIn.iNormal, 0.0), gW).xyz;
+    vOut.iPosW =  mul(make_float4(vIn.iPosL, 1.0), gW).xyz;
+    vOut.iTexCoord = vIn.iTexCoord;
+    return vOut;
+}
+
+VS_wrapper_STD_MESH(StdMesh_VS)
+
+#endif

@@ -1,0 +1,48 @@
+// This is C2E1v_green from "The Cg Tutorial" (Addison-Wesley, ISBN
+// 0321194969) by Randima Fernando and Mark J. Kilgard.  See page 38.
+#include "StandardConstants.fx"
+
+struct C2E1v_Output {
+  float4 position : POSITION;
+  float3 color    : COLOR;
+  float2 texCoord0 : TEXCOORD0;
+};
+/*
+C2E1v_Output main(float3 position : POSITION,
+	float3 normal : NORMAL,
+	float3 tangent : TANGENT,
+	float2 texcoord0 : TEXCOORD0)
+{	
+	C2E1v_Output OUT;
+
+	OUT.position = mul(float4(position, 1.0f), gWVP);
+	
+	//OUT.position = float4(position / 1000.0f, 1);
+	OUT.color = normal; // float3(0,1,0);
+
+	OUT.texCoord0 = float2(0,0); //texcoord0;
+	return OUT;
+}
+*/
+
+C2E1v_Output main(float3 position : POSITION,
+float2 texcoord0 : TEXCOORD0,
+float3 normal : NORMAL,
+float3 tangent : TANGENT
+)
+{	
+	C2E1v_Output OUT;
+
+	OUT.position = mul(float4(position, 1.0f), gWVP);
+	
+	OUT.color.xy = texcoord0;
+	OUT.color.xyz += normal;
+	OUT.color.xyz += tangent;
+	
+	
+	//OUT.position = float4(position / 1000.0f, 1);
+	//OUT.color = normal; // float3(0,1,0);
+
+	OUT.texCoord0 = texcoord0;
+	return OUT;
+}

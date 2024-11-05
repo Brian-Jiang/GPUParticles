@@ -1,0 +1,20 @@
+#ifndef DETAILEDMESH_ZOnly_PS_
+#define DETAILEDMESH_ZOnly_PS_
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardTextureResources.fx"
+#include "samplerhelper.fx"
+#include "DetailedMesh_Structs.fx"
+#include "lighthelper.fx"
+
+float4 DetailedMesh_ZOnly_PS(DETAILED_MESH_PS_IN pIn)
+{
+    float v = pIn.iTexCoord.x / pIn.iTexCoord.y;
+	float4 combinedColor = make_float4(v,v,v,v);
+	return combinedColor;
+}
+
+PS_wrapper_DETAILED_MESH(DetailedMesh_ZOnly_PS)
+
+#endif
+

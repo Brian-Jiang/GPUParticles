@@ -1,0 +1,8 @@
+MESH
+imrod.x_imrodmesh_vertex_buffer.bufa
+imrod.x_imrodmesh_index_buffer.bufa
+imrod.x_imrodmesh_texcoord_buffer.bufa
+imrod.x_imrodmesh_normal_buffer.bufa
+imrod.x_imrodmesh_tangent_buffer.bufa
+imrod.x_imrodmesh_material_set.mseta
+none

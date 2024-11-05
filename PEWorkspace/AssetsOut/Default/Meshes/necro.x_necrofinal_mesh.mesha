@@ -1,0 +1,8 @@
+MESH
+necro.x_necrofinal_vertex_buffer.bufa
+necro.x_necrofinal_index_buffer.bufa
+necro.x_necrofinal_texcoord_buffer.bufa
+necro.x_necrofinal_normal_buffer.bufa
+necro.x_necrofinal_tangent_buffer.bufa
+necro.x_necrofinal_material_set.mseta
+none

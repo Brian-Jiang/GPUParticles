@@ -1,0 +1,105 @@
+#ifndef DETAILEDMESH_VS_cg
+#define DETAILEDMESH_VS_cg
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardInstancingConstants.fx"
+#include "DetailedSkin_Structs.fx"
+
+void processBone(unsigned int instanceId, int jointId, float weight, float4 position, float4 normal, float4 tangent, inout float4 result, inout float4 normResult, inout float4 tangResult)
+{
+	#if PE_USE_COMPUTE_ANIMATION_REDUCE
+		Matrix joint0 = gCSReduceComputeTargetView[jointId + instanceId * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+	#else
+		Matrix joint0 = gInstancedBones[jointId + instanceId * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+	#endif
+
+	result += weight * mul( position, joint0);
+	normResult += weight * mul(normal, joint0);
+	tangResult += weight * mul(tangent, joint0);
+}
+
+DETAILED_MESH_SHADOWED_PS_IN DetailedSkin_Shadowed_Instanced_VS(DETAILED_SKIN_INSTANCED_VS_IN vIn)
+{
+    DETAILED_MESH_SHADOWED_PS_IN vOut;
+
+	float4 position = make_float4(vIn.iPosL, 1.0);
+	float4 normal = make_float4(vIn.iNormal, 0.0);
+	float4 tangent = make_float4(vIn.iTangent, 0.0);
+	
+	
+    float4 result = make_float4(0,0,0,0);
+    float4 normResult = make_float4(0,0,0,0);
+    float4 tangResult = make_float4(0,0,0,0);
+
+	int offset = 0;
+
+	#if 0
+		// no skinning version. useful if debugging and bone information is invalid	
+		result = position;
+		normResult = normal;
+		tangResult = tangent;
+	#else
+	
+		processBone(vIn.iInstanceId, offset + int(vIn.jointIndices.x), vIn.jointWeights.x, position, normal, tangent, result, normResult, tangResult);
+	
+		if (vIn.jointIndices.y > -0.5)
+			processBone(vIn.iInstanceId, offset + int(vIn.jointIndices.y), vIn.jointWeights.y, position, normal, tangent, result, normResult, tangResult);
+	
+		if (vIn.jointIndices.z > -0.5)
+			processBone(vIn.iInstanceId, offset + int(vIn.jointIndices.z), vIn.jointWeights.z, position, normal, tangent, result, normResult, tangResult);
+	
+		if (vIn.jointIndices.w > -0.5)
+			processBone(vIn.iInstanceId, offset + int(vIn.jointIndices.w), vIn.jointWeights.w, position, normal, tangent, result, normResult, tangResult);
+	
+		#if DEFAULT_SKIN_WEIGHTS_PER_VERTEX == 8
+			if (vIn.jointIndices1.x > -0.5)
+				processBone(vIn.iInstanceId, offset + int(vIn.jointIndices1.x), vIn.jointWeights1.x, position, normal, tangent, result, normResult, tangResult);
+		#endif
+	#endif
+	
+	float4x3 Wp = gPerInstanceDataBuffer[vIn.iInstanceId].W;
+	
+	float3x4 WSmall = 0;
+	//WSmall._m00 = W._m00; WSmall._m01 = W._m10; WSmall._m02 = W._m20; WSmall._m03 = W._m30;
+	//WSmall._m10 = W._m01; WSmall._m11 = W._m11; WSmall._m12 = W._m21; WSmall._m13 = W._m31;
+	//WSmall._m20 = W._m02; WSmall._m21 = W._m12; WSmall._m22 = W._m22; WSmall._m23 = W._m32;
+	
+	Matrix W;
+	#if 1
+		W._m00 = Wp._m00; W._m01 = Wp._m01; W._m02 = Wp._m02; W._m03 = 0;
+		W._m10 = Wp._m10; W._m11 = Wp._m11; W._m12 = Wp._m12; W._m13 = 0;
+		W._m20 = Wp._m20; W._m21 = Wp._m21; W._m22 = Wp._m22; W._m23 = 0;
+		W._m30 = Wp._m30; W._m31 = Wp._m31; W._m32 = Wp._m32; W._m33 = 1.0;
+	#else
+		W = 0;
+		W._m00 = 1.0; Wp._m11 = 1.0; W._m22 = 1.0; W._m33 = 1.0;
+		//position
+		//W._m30 = 0; W._m31 = 0.0; W._m32 = 0; W._m33 = 1.0;
+
+		W._m00 = 1; W._m01 = 0; W._m02 = 0; W._m03 = 0;
+		W._m10 = 0; W._m11 = 1; W._m12 = 0; W._m13 = 0;
+		W._m20 = 0; W._m21 = 0; W._m22 = 1; W._m23 = 0;
+		W._m30 = 0; W._m31 = 0; W._m32 = 0; W._m33 = 1.0;
+	#endif
+
+	Matrix WVP = mul(W, gViewProj); // we are not doing gPerInstanceDataBuffer[vIn.iInstanceId].WVP; to save on transferred memory
+	
+	vOut.iPosH = mul(result, WVP);
+
+	vOut.iPosW =  mul(result, W).xyz;
+	
+	normResult = normalize(normResult);
+	tangResult = normalize(tangResult);
+	vOut.iNormalW =  mul(normResult, W).xyz;
+	vOut.iTangentW = mul(tangResult, W).xyz;
+	
+    vOut.iTexCoord = vIn.iTexCoord;
+    vOut.iProjTexCoord = mul(make_float4(vOut.iPosW, 1.0), gLightWVP);
+    
+    return vOut;
+}
+
+VS_wrapper_DETAILED_SKIN_SHADOWED_INSTANCED(DetailedSkin_Shadowed_Instanced_VS)
+
+#endif

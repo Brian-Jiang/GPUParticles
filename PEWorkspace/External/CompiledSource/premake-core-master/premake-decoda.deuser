@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <command>c:/Projects/vanilla/DL/PEWorkspace/External/CompiledSource/premake-core-master/bin/Debug/premake5.exe</command>
+  <working_directory>c:/Projects/vanilla/DL/PEWorkspace/Code</working_directory>
+  <symbols_directory>c:/Projects/vanilla/DL/PEWorkspace/External/CompiledSource/premake-core-master/bin/Debug</symbols_directory>
+  <command_arguments>--platformapi=psvita --scripts=C:\Projects\vanilla\DL\PEWorkspace\External\CompiledSource\premake-core-master vs2015</command_arguments>
+  <scc>
+    <provider></provider>
+    <user></user>
+    <project_name></project_name>
+    <local_path></local_path>
+    <aux_project_path></aux_project_path>
+  </scc>
+  <files>
+    <file>
+      <filename>src\_premake_main.lua</filename>
+      <breakpoint>
+        <line>364</line>
+      </breakpoint>
+    </file>
+  </files>
+</project>

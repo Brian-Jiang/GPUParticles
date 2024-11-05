@@ -1,0 +1,8 @@
+MESH
+nazicar.x_carmesh_vertex_buffer.bufa
+nazicar.x_carmesh_index_buffer.bufa
+nazicar.x_carmesh_texcoord_buffer.bufa
+nazicar.x_carmesh_normal_buffer.bufa
+nazicar.x_carmesh_tangent_buffer.bufa
+nazicar.x_carmesh_material_set.mseta
+none

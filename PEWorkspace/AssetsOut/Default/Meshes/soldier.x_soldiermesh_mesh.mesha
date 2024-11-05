@@ -1,0 +1,8 @@
+MESH
+soldier.x_soldiermesh_vertex_buffer.bufa
+soldier.x_soldiermesh_index_buffer.bufa
+soldier.x_soldiermesh_texcoord_buffer.bufa
+soldier.x_soldiermesh_normal_buffer.bufa
+soldier.x_soldiermesh_tangent_buffer.bufa
+soldier.x_soldiermesh_material_set.mseta
+none

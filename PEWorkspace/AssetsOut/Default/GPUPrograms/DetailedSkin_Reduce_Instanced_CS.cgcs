@@ -1,0 +1,88 @@
+#ifndef DETAILEDMESH_CS_cg
+#define DETAILEDMESH_CS_cg
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardInstancingConstants.fx"
+#include "DetailedSkin_Structs.fx"
+
+
+matrix ScaleMatrix(float s)
+{
+	Matrix boneM = 0;
+
+	boneM._m00 = s; boneM._m01 = 0; boneM._m02 = 0; boneM._m03 = 0;
+	boneM._m10 = 0; boneM._m11 = s; boneM._m12 = 0; boneM._m13 = 0;
+	boneM._m20 = 0; boneM._m21 = 0; boneM._m22 = s; boneM._m23 = 0;
+	boneM._m30 = 0; boneM._m31 = 0; boneM._m32 = 0.0; boneM._m33 = 1.0;
+	return boneM;
+}
+
+matrix BoneTQToMatrix(BoneTQ tq)
+{
+	Matrix boneM = 0;
+
+	float qX = tq.m_quat.y;
+	float qY = tq.m_quat.z;
+	float qZ = tq.m_quat.w;
+	float qW = tq.m_quat.x;
+
+	boneM._m00 = 1.0; boneM._m01 = 0; boneM._m02 = 0; boneM._m03 = 0;
+	boneM._m10 = 0; boneM._m11 = 1.0; boneM._m12 = 0; boneM._m13 = 0;
+	boneM._m20 = 0; boneM._m21 = 0; boneM._m22 = 1.0; boneM._m23 = 0;
+	boneM._m30 = 0; boneM._m31 = 0; boneM._m32 = 0.0; boneM._m33 = 1.0;
+	
+	boneM._m00 = 1 - 2 * (qY * qY + qZ * qZ);
+	boneM._m10 = 2 * (qX * qY - qW * qZ);
+	boneM._m20 = 2 * (qX * qZ + qW * qY);
+		
+	boneM._m01 = 2 * (qX * qY + qW * qZ);
+	boneM._m11 = 1 - 2 * (qX * qX + qZ * qZ);
+	boneM._m21 = 2 * (qY * qZ - qW * qX);
+		
+	boneM._m02 = 2 * (qX * qZ - qW * qY);
+	boneM._m12 = 2 * (qY * qZ + qW * qX);
+	boneM._m22 = 1 - 2 * (qX * qX + qY * qY);
+
+	boneM._m30 = tq.m_translation.x; boneM._m31 = tq.m_translation.y; boneM._m32 = tq.m_translation.z; boneM._m33 = 1.0;
+	
+	return boneM;
+}
+
+//each thread processes one bone in skeleton
+// each group processes one skeleton (one SkinInstance)
+[numthreads(PE_MAX_BONE_COUNT_IN_DRAW_CALL, 1, 1)]
+void main( uint3 Gid : SV_GroupID, uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID, uint GI : SV_GroupIndex )
+{
+	#if PE_STORE_CS_MAP_RESULT_AS_MATRIX
+		Matrix localTransform = gCSMapComputeTargetView[DTid.x /* = GTid.x + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL*/];
+	#else
+		BoneTQ tq = gCSMapComputeTargetView[DTid.x /* = GTid.x + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL*/];
+		Matrix localTransform = BoneTQToMatrix(tq);
+	#endif
+
+	int boneId = GTid.x;
+	while (gSkeletonStructureView[boneId].m_parentJointIndex >= 0)
+	{
+		boneId = gSkeletonStructureView[boneId].m_parentJointIndex;
+
+		#if PE_STORE_CS_MAP_RESULT_AS_MATRIX
+			Matrix parent = gCSMapComputeTargetView[boneId + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+		#else
+			BoneTQ tq = gCSMapComputeTargetView[boneId + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+			Matrix parent = BoneTQToMatrix(tq);
+		#endif
+		
+		localTransform = mul(localTransform, parent);
+	}
+
+	localTransform = mul(gBoneInverses[GTid.x], localTransform);
+
+	matrix scaleM = ScaleMatrix(0.01);
+
+	localTransform = mul(localTransform, scaleM);
+
+	gCSReduceComputeTargetUAV[GTid.x + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL] = localTransform;
+}
+
+#endif

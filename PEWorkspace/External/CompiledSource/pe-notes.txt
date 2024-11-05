@@ -1,0 +1,93 @@
+Latest used folder: 
+for windows:
+premake-core-master
+it is actually a premake release premake-5.0.0-alpha9-src.zip
+
+The steps below describe how premake for PrimeEngine was downloaded and built.
+These steps need not to be repeated unless engine is upgrading to new version of premake
+The normal premake development should usually only involve chnaging premake scripts in premake source folder
+
+**********************************************************************
+** Downloading premake source and installing premake for PrimeEngine
+**********************************************************************
+
+premake-core-master was source downloaded from https://github.com/premake/premake-core
+on 5/30/16
+
+To build:
+* Downloaded PEWorkspace\External\DonwloadedBinaries\bin-win\premake5-premake-5.0.0-alpha8-windows.exe
+
+* In cygwin go to  /cygdrive/c/Projects/vanilla/DL/PEWorkspace/External/CompiledSource
+
+
+* run premake embed to embed the scripts into the scripts.c file. Note, this file is only used in release, so while we will generate it once, we will use debug binary that will use lua scripts directly, not embedded
+
+artem@artem-usc-mbpc /cygdrive/c/Projects/vanilla/DL/PEWorkspace/External/CompiledSource/premake-core-master
+$ ../../DownloadedBinaries/bin-win/premake5-premake-5.0.0-alpha8-windows.exe embed
+Running action 'embed'...
+Compiling...
+Embedding...
+Writing...
+
+
+* run premake to generate a 2015 solution
+
+artem@artem-usc-mbpc /cygdrive/c/Projects/vanilla/DL/PEWorkspace/External/CompiledSource/premake-core-master
+$ ../../DownloadedBinaries/bin-win/premake5-premake-5.0.0-alpha8-windows.exe vs2015
+Building configurations...
+Running action 'vs2015'...
+Generated Premake5.sln...
+Generated Premake5.vcxproj...
+Generated Premake5.vcxproj.user...
+Generated lua-lib.vcxproj...
+Generated zlib-lib.vcxproj...
+Generated zip-lib.vcxproj...
+Generated curl-lib.vcxproj...
+Done (592ms).
+
+* Run Visual Studio 2015
+
+* Build the solution. Debug version.
+
+5>  Premake5.vcxproj -> C:\Projects\vanilla\DL\PEWorkspace\External\CompiledSource\premake-core-master\bin\debug\premake5.exe
+========== Build: 5 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+
+* Copy C:\Projects\vanilla\DL\PEWorkspace\External\CompiledSource\premake-core-master\bin\debug\premake5.exe to
+C:\Projects\vanilla\DL\PEWorkspace\External\CompiledSource\bin-win\premake-core-master
+
+
+
+
+
+
+
+
+**********************************************************************
+** Premake Bootstrap
+**********************************************************************
+
+
+in Tools/setenv.sh
+for windows:
+export PREMAKE_PATH=${PYENGINE_WORKSPACE_DIR}${sep}External${sep}CompiledSource${sep}"premake-core-master"${sep}src
+export PATH=$PATH:$PYENGINE_WORKSPACE_DIR/External/CompiledSource/"bin-win"/"premake-core-master"
+alias premake=premake5 /scripts
+	
+    
+    
+    
+******
+*** one way to run premake:
+******
+
+artem@artem-usc-mbpc /cygdrive/c/Projects/vanilla/DL/PEWorkspace/Code
+$ ../External/CompiledSource/premake-core-master/bin/Debug/premake5.exe --scripts=../External/CompiledSource/premake-core-master --platformapi=xbox360 vs2015
+
+
+artem@artem-usc-mbpc /cygdrive/c/Projects/vanilla/DL/PEWorkspace/Code
+$ ../External/CompiledSource/premake-core-master/bin/Debug/premake5.exe --scripts=../External/CompiledSource/premake-core-master --platformapi=psvita vs2015
+
+
+
+
+

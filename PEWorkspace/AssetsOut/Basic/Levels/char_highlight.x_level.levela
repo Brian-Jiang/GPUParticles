@@ -1,0 +1,6 @@
+LevelLoader.CreateGameObject("PEObject0_pPlane1",1.0, 0.0, -0.0, 0.0, 0.0, 1.0, -0.0, 0.0, -0.0, -0.0, 1.0, 0.0, -8.326546, 0.0, -4.034357, 1.0, 'char_highlight.x_PEObject0_pPlane.lua', 'Basic',0xb444ef40, 0xe53911e3, 0x90ccb8e8, 0x560d92e3)
+
+LevelLoader.CreateGameObject("PEObject2_polySurface1",0.972287, -0.233531, -0.011024, 0.0, 0.164713, 0.650779, 0.741186, 0.0, -0.165916, -0.722461, 0.671209, 0.0, 0.0, 322.912593, -0.0, 1.0, 'char_highlight.x_PEObject2_polySu.lua', 'Basic',0x8b582380, 0xe53a11e3, 0xb5acb8e8, 0x560d92e3)
+
+LevelLoader.CreateGameObject("PEObject1_TspotRep",0.973257, -0.166102, -0.158686, 0.0, -0.113459, -0.948219, 0.296662, 0.0, -0.199746, -0.270724, -0.941706, 0.0, 43.805491, 121.104612, 402.526071, 1.0, 'char_highlight.x_PEObject1_TspotR.lua', 'Basic',0xc8c18870, 0xe53911e3, 0x9ac2b8e8, 0x560d92e3)
+

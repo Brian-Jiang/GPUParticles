@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="FX Compile Rule File"
+	Version="8.00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="fxbuild_dx10"
+			DisplayName="fxbuild_dx10"
+			CommandLine="fxc  /D D3D10=1 /O3 /Gch /Tfx_4_0 /Fo&quot;$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\$(InputName).fxo10&quot; &quot;$(InputPath)&quot;"
+			Outputs="$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\$(InputName).fxo10"
+			FileExtensions="*.fx"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="fxbuild_dx11"
+			DisplayName="fxbuild_dx11"
+			CommandLine="fxc  /D D3D11=1 /Od /Gch /Tfx_5_0 /Fo&quot;$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\$(InputName).fxo11&quot; &quot;$(InputPath)&quot;"
+			Outputs="$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\$(InputName).fxo11"
+			FileExtensions="*.fx"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="cgbuild_ps3_vs"
+			DisplayName="cgbuild_ps3_vs"
+			CommandLine="$(SCE_PSP2_SDK_DIR)\host_tools\bin\psp2cgc.exe --cache --profile sce_vp_psp2 -DAPIABSTRACTION_PSVITA=1 &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).gxp&quot;"
+			Outputs="$(InputDir)$(InputName).gxp"
+			FileExtensions="*.cgvs"
+			ExecutionDescription="Compiling VS with SCE CGC and converting to PSVITA format"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="cgbuild_ps3_ps"
+			DisplayName="cgbuild_ps3_ps"
+			CommandLine="$(SCE_PSP2_SDK_DIR)\host_tools\bin\psp2cgc.exe --cache --profile sce_fp_psp2 -DAPIABSTRACTION_PSVITA=1 &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).gxp&quot;"
+			Outputs="$(InputDir)$(InputName).gxp"
+			FileExtensions="*.cgps"
+			ExecutionDescription="Compiling PS with SCE CGC and converting to PSVITA format"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName
+      Include="fxbuild_dx10">
+      <Targets>_fxbuild_dx10</Targets>
+    </AvailableItemName>
+    <AvailableItemName
+      Include="fxbuild_dx11">
+      <Targets>_fxbuild_dx11</Targets>
+    </AvailableItemName>
+    <AvailableItemName
+      Include="cgbuild_ps3_vs">
+      <Targets>_cgbuild_ps3_vs</Targets>
+    </AvailableItemName>
+    <AvailableItemName
+      Include="cgbuild_ps3_ps">
+      <Targets>_cgbuild_ps3_ps</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="fxbuild_dx10"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <UsingTask
+    TaskName="fxbuild_dx11"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <UsingTask
+    TaskName="cgbuild_ps3_vs"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <UsingTask
+    TaskName="cgbuild_ps3_ps"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_fxbuild_dx10"
+    BeforeTargets="$(fxbuild_dx10BeforeTargets)"
+    AfterTargets="$(fxbuild_dx10AfterTargets)"
+    Condition="'@(fxbuild_dx10)' != ''"
+    DependsOnTargets="$(fxbuild_dx10DependsOn);Computefxbuild_dx10Output"
+    Outputs="%(fxbuild_dx10.Outputs)"
+    Inputs="%(fxbuild_dx10.Identity);%(fxbuild_dx10.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <fxbuild_dx10
+        Remove="@(fxbuild_dx10)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <fxbuild_dx10_tlog
+        Include="%(fxbuild_dx10.Outputs)"
+        Condition="'%(fxbuild_dx10.Outputs)' != '' and '%(fxbuild_dx10.ExcludedFromBuild)' != 'true'">
+        <Source>@(fxbuild_dx10, '|')</Source>
+      </fxbuild_dx10_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(fxbuild_dx10.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(fxbuild_dx10_tlog)' != '' and '%(fxbuild_dx10_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(fxbuild_dx10_tlog.Source);@(fxbuild_dx10_tlog-&gt;'%(Fullpath)')" />
+    <fxbuild_dx10
+      Condition="'@(fxbuild_dx10)' != '' and '%(fxbuild_dx10.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(fxbuild_dx10.CommandLineTemplate)"
+      AdditionalOptions="%(fxbuild_dx10.AdditionalOptions)"
+      Inputs="%(fxbuild_dx10.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            Computefxbuild_dx10Output;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            Computefxbuild_dx10Output;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="Computefxbuild_dx10Output"
+    Condition="'@(fxbuild_dx10)' != ''">
+    <ItemGroup>
+      <fxbuild_dx10DirsToMake
+        Condition="'@(fxbuild_dx10)' != '' and '%(fxbuild_dx10.ExcludedFromBuild)' != 'true'"
+        Include="%(fxbuild_dx10.Outputs)" />
+      <Link
+        Include="%(fxbuild_dx10DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(fxbuild_dx10DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(fxbuild_dx10DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(fxbuild_dx10DirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+  <Target
+    Name="_fxbuild_dx11"
+    BeforeTargets="$(fxbuild_dx11BeforeTargets)"
+    AfterTargets="$(fxbuild_dx11AfterTargets)"
+    Condition="'@(fxbuild_dx11)' != ''"
+    DependsOnTargets="$(fxbuild_dx11DependsOn);Computefxbuild_dx11Output"
+    Outputs="%(fxbuild_dx11.Outputs)"
+    Inputs="%(fxbuild_dx11.Identity);%(fxbuild_dx11.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <fxbuild_dx11
+        Remove="@(fxbuild_dx11)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <fxbuild_dx11_tlog
+        Include="%(fxbuild_dx11.Outputs)"
+        Condition="'%(fxbuild_dx11.Outputs)' != '' and '%(fxbuild_dx11.ExcludedFromBuild)' != 'true'">
+        <Source>@(fxbuild_dx11, '|')</Source>
+      </fxbuild_dx11_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(fxbuild_dx11.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(fxbuild_dx11_tlog)' != '' and '%(fxbuild_dx11_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(fxbuild_dx11_tlog.Source);@(fxbuild_dx11_tlog-&gt;'%(Fullpath)')" />
+    <fxbuild_dx11
+      Condition="'@(fxbuild_dx11)' != '' and '%(fxbuild_dx11.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(fxbuild_dx11.CommandLineTemplate)"
+      AdditionalOptions="%(fxbuild_dx11.AdditionalOptions)"
+      Inputs="%(fxbuild_dx11.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            Computefxbuild_dx11Output;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            Computefxbuild_dx11Output;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="Computefxbuild_dx11Output"
+    Condition="'@(fxbuild_dx11)' != ''">
+    <ItemGroup>
+      <fxbuild_dx11DirsToMake
+        Condition="'@(fxbuild_dx11)' != '' and '%(fxbuild_dx11.ExcludedFromBuild)' != 'true'"
+        Include="%(fxbuild_dx11.Outputs)" />
+      <Link
+        Include="%(fxbuild_dx11DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(fxbuild_dx11DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(fxbuild_dx11DirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(fxbuild_dx11DirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+  <Target
+    Name="_cgbuild_ps3_vs"
+    BeforeTargets="$(cgbuild_ps3_vsBeforeTargets)"
+    AfterTargets="$(cgbuild_ps3_vsAfterTargets)"
+    Condition="'@(cgbuild_ps3_vs)' != ''"
+    DependsOnTargets="$(cgbuild_ps3_vsDependsOn);Computecgbuild_ps3_vsOutput"
+    Outputs="%(cgbuild_ps3_vs.Outputs)"
+    Inputs="%(cgbuild_ps3_vs.Identity);%(cgbuild_ps3_vs.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <cgbuild_ps3_vs
+        Remove="@(cgbuild_ps3_vs)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <cgbuild_ps3_vs_tlog
+        Include="%(cgbuild_ps3_vs.Outputs)"
+        Condition="'%(cgbuild_ps3_vs.Outputs)' != '' and '%(cgbuild_ps3_vs.ExcludedFromBuild)' != 'true'">
+        <Source>@(cgbuild_ps3_vs, '|')</Source>
+      </cgbuild_ps3_vs_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(cgbuild_ps3_vs.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(cgbuild_ps3_vs_tlog)' != '' and '%(cgbuild_ps3_vs_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(cgbuild_ps3_vs_tlog.Source);@(cgbuild_ps3_vs_tlog-&gt;'%(Fullpath)')" />
+    <cgbuild_ps3_vs
+      Condition="'@(cgbuild_ps3_vs)' != '' and '%(cgbuild_ps3_vs.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(cgbuild_ps3_vs.CommandLineTemplate)"
+      AdditionalOptions="%(cgbuild_ps3_vs.AdditionalOptions)"
+      Inputs="%(cgbuild_ps3_vs.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            Computecgbuild_ps3_vsOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            Computecgbuild_ps3_vsOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="Computecgbuild_ps3_vsOutput"
+    Condition="'@(cgbuild_ps3_vs)' != ''">
+    <ItemGroup>
+      <cgbuild_ps3_vsDirsToMake
+        Condition="'@(cgbuild_ps3_vs)' != '' and '%(cgbuild_ps3_vs.ExcludedFromBuild)' != 'true'"
+        Include="%(cgbuild_ps3_vs.Outputs)" />
+      <Link
+        Include="%(cgbuild_ps3_vsDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(cgbuild_ps3_vsDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(cgbuild_ps3_vsDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(cgbuild_ps3_vsDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+  <Target
+    Name="_cgbuild_ps3_ps"
+    BeforeTargets="$(cgbuild_ps3_psBeforeTargets)"
+    AfterTargets="$(cgbuild_ps3_psAfterTargets)"
+    Condition="'@(cgbuild_ps3_ps)' != ''"
+    DependsOnTargets="$(cgbuild_ps3_psDependsOn);Computecgbuild_ps3_psOutput"
+    Outputs="%(cgbuild_ps3_ps.Outputs)"
+    Inputs="%(cgbuild_ps3_ps.Identity);%(cgbuild_ps3_ps.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <cgbuild_ps3_ps
+        Remove="@(cgbuild_ps3_ps)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <cgbuild_ps3_ps_tlog
+        Include="%(cgbuild_ps3_ps.Outputs)"
+        Condition="'%(cgbuild_ps3_ps.Outputs)' != '' and '%(cgbuild_ps3_ps.ExcludedFromBuild)' != 'true'">
+        <Source>@(cgbuild_ps3_ps, '|')</Source>
+      </cgbuild_ps3_ps_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(cgbuild_ps3_ps.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(cgbuild_ps3_ps_tlog)' != '' and '%(cgbuild_ps3_ps_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(cgbuild_ps3_ps_tlog.Source);@(cgbuild_ps3_ps_tlog-&gt;'%(Fullpath)')" />
+    <cgbuild_ps3_ps
+      Condition="'@(cgbuild_ps3_ps)' != '' and '%(cgbuild_ps3_ps.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(cgbuild_ps3_ps.CommandLineTemplate)"
+      AdditionalOptions="%(cgbuild_ps3_ps.AdditionalOptions)"
+      Inputs="%(cgbuild_ps3_ps.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            Computecgbuild_ps3_psOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            Computecgbuild_ps3_psOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="Computecgbuild_ps3_psOutput"
+    Condition="'@(cgbuild_ps3_ps)' != ''">
+    <ItemGroup>
+      <cgbuild_ps3_psDirsToMake
+        Condition="'@(cgbuild_ps3_ps)' != '' and '%(cgbuild_ps3_ps.ExcludedFromBuild)' != 'true'"
+        Include="%(cgbuild_ps3_ps.Outputs)" />
+      <Link
+        Include="%(cgbuild_ps3_psDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(cgbuild_ps3_psDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(cgbuild_ps3_psDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(cgbuild_ps3_psDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>

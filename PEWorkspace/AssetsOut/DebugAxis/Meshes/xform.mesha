@@ -1,0 +1,8 @@
+MESH
+xform_pos.bufa
+xform_index.bufa
+xform_tex_coord_0.bufa
+xform_norm.bufa
+xform_tang.bufa
+xform.mseta
+none

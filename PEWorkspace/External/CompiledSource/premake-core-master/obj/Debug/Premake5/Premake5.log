@@ -1,0 +1,43 @@
+﻿  buffered_io.c
+  criteria_matches.c
+  debug_prompt.c
+  http.c
+  lua_auxlib.c
+  os_chdir.c
+  os_chmod.c
+  os_compile.c
+  os_copyfile.c
+  os_getcwd.c
+  os_getpass.c
+  os_getversion.c
+  os_is64bit.c
+  os_isdir.c
+  os_isfile.c
+c:\projects\vanilla\dl\peworkspace\external\compiledsource\premake-core-master\src\host\os_getversion.c(81): warning C4996: 'GetVersionExW': was declared deprecated
+  c:\program files (x86)\windows kits\8.1\include\um\sysinfoapi.h(442): note: see declaration of 'GetVersionExW'
+  os_islink.c
+  os_locate.c
+  os_match.c
+  os_mkdir.c
+  os_pathsearch.c
+  os_realpath.c
+  os_rmdir.c
+  os_stat.c
+  os_uuid.c
+  os_writefile_ifnotequal.c
+  path_getabsolute.c
+  path_getrelative.c
+  path_isabsolute.c
+  path_join.c
+  path_normalize.c
+  path_translate.c
+  path_wildcards.c
+  premake.c
+  premake_main.c
+  string_endswith.c
+  string_hash.c
+  string_sha1.c
+  string_startswith.c
+  zip_extract.c
+  scripts.c
+  Premake5.vcxproj -> C:\Projects\vanilla\DL\PEWorkspace\External\CompiledSource\premake-core-master\bin\debug\premake5.exe

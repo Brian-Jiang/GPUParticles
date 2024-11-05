@@ -1,0 +1,65 @@
+#pragma once
+
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardInstancingConstants.fx"
+
+float Random(uint seed)
+{
+    seed = (seed << 13) ^ seed;
+    return (1.0 - ((seed * (seed * seed * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+// This is for setting up the particle cs and spanwing new particles
+[numthreads(1, 1, 1)]
+void main(uint3 Gid : SV_GroupID, uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID, uint GI : SV_GroupIndex)
+{
+    uint originalCount;
+    gIndirectDrawArgsUAV.InterlockedExchange(4, 0, originalCount);
+    
+    // Now only support one emitter
+    ParticleEmitter emitter = gParticleEmitters[0];
+    float emissionRate = emitter.m_emissionRate;
+    int count = (int)(emissionRate);
+    int totalCount = originalCount + count;
+    
+    // clamp the group count because the buffer has limited size
+    int dispatchGroupCount = min(totalCount / PE_MAX_PARTICLE_PER_GROUP + 1, PE_MAX_PARTICLE_GROUP);
+    gIndirectDispatchArgsUAV.Store(0, dispatchGroupCount);
+    
+    // clamp new particle count as well to prevent draw instance count larger than the buffer size
+    count = min(count, PE_MAX_PARTICLE_PER_GROUP * PE_MAX_PARTICLE_GROUP - originalCount);
+    
+    int pinpong = gGameFrame % 2;
+    uint originalIndex;
+    // for now, add all particles in loop, can spread to multiple dispatches in the future
+    for (int i = 0; i < count; i++)
+    {
+        gIndirectDrawArgsUAV.InterlockedAdd(4, 1, originalIndex);
+
+        float random = Random(gGameFrame + i + 1);
+        float random2 = Random(gGameFrame + i);
+        float random3 = Random((uint) (gGameTimes.y * 10000.0f));
+        float random4 = Random(gGameFrame + i + 2);
+        float lifetime = 3.0f * random3 + 6.0f * (1.0f - random3);  // 3-6 seconds
+        float x = -2.0f * random + 2.0f * (1.0f - random);  // -2 to 2
+        float y = 18.0f * random4 + 25.0f * (1.0f - random4);  // 18 to 25
+        float z = -2.0f * random2 + 2.0f * (1.0f - random2);  // -2 to 2
+        
+        Particle particle;
+        particle.m_position = emitter.m_position;
+        particle.m_velocity = float4(x, y, z, 0.0f);
+        particle.m_acceleration = float4(0.0f, -9.8f, 0.0f, 0.0f);
+        particle.m_age = 0.01f;
+        particle.m_lifetime = lifetime;
+        
+        if (pinpong == 0)
+        {
+            gCSMapParticleTarget2UAV[originalIndex] = particle;
+        }
+        else
+        {
+            gCSMapParticleTarget1UAV[originalIndex] = particle;
+        }
+    }
+}

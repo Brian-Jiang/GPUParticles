@@ -1,0 +1,8 @@
+MESH
+box.x_main_vertex_buffer.bufa
+box.x_main_index_buffer.bufa
+box.x_main_texcoord_buffer.bufa
+box.x_main_normal_buffer.bufa
+box.x_main_tangent_buffer.bufa
+box.x_main_material_set.mseta
+none

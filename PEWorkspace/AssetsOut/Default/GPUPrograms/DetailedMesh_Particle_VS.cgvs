@@ -1,0 +1,51 @@
+#ifndef DETAILEDMESH_PARTICLE_VS_cg
+#define DETAILEDMESH_PARTICLE_VS_cg
+// #define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "DetailedMesh_Structs.fx"
+#include "StandardInstancingConstants.fx"
+
+DETAILED_MESH_SHADOWED_PS_IN DetailedMesh_Particle_VS(DETAILED_MESH_INSTANCED_VS_IN vIn)
+{
+    DETAILED_MESH_SHADOWED_PS_IN vOut;
+	float3 pos = vIn.iPosL;
+    
+    uint instanceId = vIn.iInstanceId;
+    int pinpong = gGameFrame % 2;
+    float4x4 wMatrix = float4x4(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+    );
+    
+    if (pinpong == 0)
+    {
+        Particle p = gCSMapParticleComputeTarget2View[instanceId];
+        float4 position = p.m_position;
+        pos *= 0.1f;
+        pos += position.xyz;
+    }
+    else
+    {
+        Particle p = gCSMapParticleComputeTarget1View[instanceId];
+        float4 position = p.m_position;
+        pos *= 0.1f;
+        pos += position.xyz;
+    }
+	
+    matrix vp = gViewProj;
+
+    vOut.iPosH = mul(make_float4(pos, 1.0), vp);
+    vOut.iNormalW = mul(make_float4(vIn.iNormal, 0), wMatrix).xyz;
+    vOut.iPosW = mul(make_float4(pos, 1.0), wMatrix).xyz;
+    vOut.iTangentW = mul(make_float4(vIn.iTangent, 1.0), wMatrix).xyz;
+    vOut.iTexCoord = vIn.iTexCoord;
+    vOut.iProjTexCoord = mul(make_float4(vOut.iPosW, 1.0), gLightWVP);
+    return vOut;
+}
+
+VS_wrapper_DETAILED_MESH_PARTICLE(DetailedMesh_Particle_VS)
+
+#endif

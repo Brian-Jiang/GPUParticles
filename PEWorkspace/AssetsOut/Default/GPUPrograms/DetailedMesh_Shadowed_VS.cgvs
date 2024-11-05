@@ -1,0 +1,27 @@
+#ifndef DETAILEDMESH_VS_cg
+#define DETAILEDMESH_VS_cg
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "DetailedMesh_Structs.fx"
+
+DETAILED_MESH_SHADOWED_PS_IN DetailedMesh_Shadowed_VS(DETAILED_MESH_VS_IN vIn)
+{
+    DETAILED_MESH_SHADOWED_PS_IN vOut;
+	float3 pos = vIn.iPosL;
+	
+	Matrix WVP = gWVP;
+	Matrix W = gW;
+
+    vOut.iPosH = mul(make_float4(pos, 1.0), WVP);
+    vOut.iNormalW = mul(make_float4(vIn.iNormal, 0), W).xyz;
+    vOut.iPosW =  mul(make_float4(pos, 1.0), W).xyz;
+    vOut.iTangentW = mul(make_float4(vIn.iTangent, 1.0), W).xyz;
+    vOut.iTexCoord = vIn.iTexCoord;
+    vOut.iProjTexCoord = mul(make_float4(vOut.iPosW, 1.0), gLightWVP);
+    return vOut;
+}
+
+VS_wrapper_DETAILED_MESH_SHADOWED(DetailedMesh_Shadowed_VS)
+
+#endif

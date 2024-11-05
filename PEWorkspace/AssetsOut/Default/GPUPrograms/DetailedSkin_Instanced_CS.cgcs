@@ -1,0 +1,111 @@
+#ifndef DETAILEDMESH_CS_cg
+#define DETAILEDMESH_CS_cg
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardInstancingConstants.fx"
+#include "DetailedSkin_Structs.fx"
+
+matrix BoneTQToMatrix(BoneTQ tq)
+{
+	Matrix boneM = 0;
+
+	float qX = tq.m_quat.y;
+	float qY = tq.m_quat.z;
+	float qZ = tq.m_quat.w;
+	float qW = tq.m_quat.x;
+
+	boneM._m00 = 1.0; boneM._m01 = 0; boneM._m02 = 0; boneM._m03 = 0;
+	boneM._m10 = 0; boneM._m11 = 1.0; boneM._m12 = 0; boneM._m13 = 0;
+	boneM._m20 = 0; boneM._m21 = 0; boneM._m22 = 1.0; boneM._m23 = 0;
+	boneM._m30 = 0; boneM._m31 = 0; boneM._m32 = 0.0; boneM._m33 = 1.0;
+	
+	boneM._m00 = 1 - 2 * (qY * qY + qZ * qZ);
+	boneM._m10 = 2 * (qX * qY - qW * qZ);
+	boneM._m20 = 2 * (qX * qZ + qW * qY);
+		
+	boneM._m01 = 2 * (qX * qY + qW * qZ);
+	boneM._m11 = 1 - 2 * (qX * qX + qZ * qZ);
+	boneM._m21 = 2 * (qY * qZ - qW * qX);
+		
+	boneM._m02 = 2 * (qX * qZ - qW * qY);
+	boneM._m12 = 2 * (qY * qZ + qW * qX);
+	boneM._m22 = 1 - 2 * (qX * qX + qY * qY);
+
+	boneM._m30 = tq.m_translation.x; boneM._m31 = tq.m_translation.y; boneM._m32 = tq.m_translation.z; boneM._m33 = 1.0;
+	
+	return boneM;
+}
+
+BoneTQ lerpTQ(BoneTQ a, BoneTQ b, float alpha)
+{
+	BoneTQ res;
+	res.m_quat = lerp(a.m_quat, b.m_quat, alpha);
+	res.m_translation = lerp(a.m_translation, b.m_translation, alpha);
+	return res;
+}
+
+BoneTQ SLERP(BoneTQ a, BoneTQ b, float alpha)
+{
+	float dotRes = dot(a.m_quat, b.m_quat);
+	float4 realB = b.m_quat;
+	if (dotRes < 0)
+	{
+		dotRes = -dotRes;
+		realB = -realB;
+	}
+		
+	if (dotRes > 0.9999f)
+	{
+		return lerpTQ(a, b, alpha);
+	}
+
+	//if ((1.0 - ABS(cos_angle)) > EPSILON) {
+	  
+	float sinOmega = sqrt(1.0f - dotRes * dotRes);
+
+	float omega = atan2(sinOmega, dotRes);
+	float oneOverSinOmega = 1.0f / sinOmega;
+
+	float k0 = sin((1.0f - alpha) * omega) * oneOverSinOmega;
+	float k1 = sin(alpha * omega) * oneOverSinOmega;
+		
+	BoneTQ res;
+	res.m_quat = a.m_quat * k0 + realB * k1;
+		
+	// this is needed if bad input data or accumulated floating point error
+	// TODO: maybe do this only when needed
+	// res.m_quat.normalize();
+
+	res.m_translation = a.m_translation * (1.0f - alpha) + b.m_translation * alpha;
+		
+	return res;
+}
+
+//each thread processes one bone in skeleton
+// each group processes one skeleton (one SkinInstance)
+[numthreads(PE_MAX_BONE_COUNT_IN_DRAW_CALL, 1, 1)]
+void main( uint3 Gid : SV_GroupID, uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID, uint GI : SV_GroupIndex )
+{
+	int additionalFrameOffset = (Gid.x) * (PE_MAX_FRAMES_IN_ANIMATION) + Gid.x;
+
+	float time = gGameTimes.x * 6;
+	int frameIndex = floor(time) + additionalFrameOffset;
+
+	frameIndex = frameIndex % (PE_MAX_FRAMES_IN_ANIMATION * (PE_MAX_ANIMATIONS_IN_BUFFER/3)); // make sure we are in bounds of database
+
+	BoneTQ tq0 = gAnimationData[GTid.x + frameIndex * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+	BoneTQ tq1 = gAnimationData[GTid.x + (frameIndex+1) * PE_MAX_BONE_COUNT_IN_DRAW_CALL];
+
+	BoneTQ res = SLERP(tq0, tq1, frac(time));
+
+	//tq.m_translation = make_float4(1.0, 2.0, 3.0, 4.0);
+
+	#if PE_STORE_CS_MAP_RESULT_AS_MATRIX
+		// in case of CS Reduce, we will store data as matrix so that next CS doesnt need to decode it into Matrix
+		gCSMapComputeTargetUAV[GTid.x + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL] = BoneTQToMatrix(res);
+	#else
+		gCSMapComputeTargetUAV[GTid.x + Gid.x * PE_MAX_BONE_COUNT_IN_DRAW_CALL] = res;
+	#endif
+}
+#endif

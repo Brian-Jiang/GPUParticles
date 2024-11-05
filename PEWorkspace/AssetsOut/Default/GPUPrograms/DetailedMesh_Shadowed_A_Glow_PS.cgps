@@ -1,0 +1,112 @@
+#ifndef DETAILEDMESH_GLOW_PS
+#define DETAILEDMESH_GLOW_PS
+#include "APIAbstraction.gpu"
+#include "StandardConstants.fx"
+#include "StandardTextureResources.fx"
+#include "samplerhelper.fx"
+#include "DetailedMesh_Structs.fx"
+#include "lighthelper.fx"
+#include "shadowmaphelper.fx"
+
+float4 DetailedMesh_Shadowed_A_Glow_PS(DETAILED_MESH_SHADOWED_PS_IN pIn)
+{
+	// note: 0 alpha means no glow
+	float4 originalColor = sample2D(gDiffuseMapSampler, pIn.iTexCoord, gDiffuseMap);
+	
+	#if APIABSTRACTION_PSVITA
+	return originalColor;
+	#endif
+
+	//return make_float4(pIn.iTexCoord.xy, 0, 0);
+	//return make_float4(originalColor.xyz, 0);
+
+	float3 perPixelNormal = pIn.iNormalW;
+
+	if (xHasNrm_yHasSpec_zHasGlow_wHasDiff.x > 0.1)
+	{
+		// retrieve the normal vector from bump map
+		perPixelNormal = sample2D(gBumpMapSampler, pIn.iTexCoord, gBumpMap).xyz;
+		
+
+		//Uncompress from [0,1] to [-1,1]
+		perPixelNormal = 2.0*perPixelNormal - 1.0;
+		
+		//Build orthonormal basis
+		float3 N = normalize(pIn.iNormalW);
+		float3 T = normalize(pIn.iTangentW - dot(pIn.iTangentW, N)*N);
+		float3 B = cross(N,T);
+		
+		float3x3 TBN = make_float3x3(T, B, N);
+		
+		// Tranform from tangent space to world space
+		perPixelNormal = normalize(mul(perPixelNormal, TBN));
+	}
+	else
+	{
+		perPixelNormal = normalize(perPixelNormal);
+	}
+
+	SurfaceInfo defaultSurface;
+    defaultSurface.pos = pIn.iPosW;
+	defaultSurface.normal =	perPixelNormal;
+	float4 combinedColor = originalColor;
+	defaultSurface.diffuse = combinedColor;
+	defaultSurface.spec = make_float4(0.1, 0.1, 0.1, 20.0);
+	
+
+
+	/*if (xHasNrm_yHasSpec_zHasGlow_wHasDiff.y)
+	{
+		// retieve the specular color
+		float perPixelSpecular = sample(gSpecularMapSampler, iTexCoord, gSpecularMap).r; //Greyscale so pick first sample
+		perPixelSpecular *= 1.2f;//Artificially inflate specular values
+		defaultSurface.spec.r *= perPixelSpecular;
+		defaultSurface.spec.g *= perPixelSpecular;
+		defaultSurface.spec.b *= perPixelSpecular;
+	}*/
+
+	float shadowFactor = CalcShadowFactor(pIn.iProjTexCoord);
+    
+	//Combine lighting from all lights
+	float4 combinedLighting = make_float4(0, 0, 0, 0);
+	
+	
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight0, xyzgEyePosW_wDoMotionBlur.xyz, shadowFactor), 1.0);
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight1, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight2, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight3, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+    
+    /*
+    
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight4, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight5, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight6, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	combinedLighting +=	make_float4(RenderLight(defaultSurface, gLight7, xyzgEyePosW_wDoMotionBlur.xyz, 1.0), 1.0);
+	*/
+	combinedColor = combinedLighting;
+	
+	// zero-out the glow
+	combinedColor.a = 0.0;
+	#if 1
+	if (xHasNrm_yHasSpec_zHasGlow_wHasDiff.z > 0.5)
+	{
+		// change target alpha based on glow
+		float perPixelGlow = sample2D(gGlowMapSampler, pIn.iTexCoord, gGlowMap).r;
+		if (perPixelGlow > 0.1)
+		{
+			combinedColor = lerp(combinedColor, originalColor, perPixelGlow);
+			combinedColor.a = perPixelGlow;
+		}
+	}
+	#endif
+	
+	//combinedColor = make_float4(max(perPixelNormal.r + combinedColor.r / 100.0, 0.0), max(perPixelNormal.g, 0.0), max(perPixelNormal.b, 0.0), 0.02);
+
+	return combinedColor;
+}
+
+PS_wrapper_DETAILED_MESH_SHADOWED(DetailedMesh_Shadowed_A_Glow_PS)
+
+#endif
+

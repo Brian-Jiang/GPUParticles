@@ -1,0 +1,25 @@
+////////////////////////////////
+//  PyEngine userSetup.mel
+////////////////////////////////
+//
+// if you have an existing userSetup.mel file you will need to append 
+
+global proc UpdateShelf()
+{
+    global string $gShelfTopLevel;
+    string $ShelfName = "shelf_PrimeEngine.mel";
+    int $ShelfExists = `control -exists $ShelfName`;
+
+    // If a shelf with the name $ShelfName exists then delete it
+    if ( $ShelfExists == "1" )
+    {
+        deleteUI -layout ($gShelfTopLevel + "|" + $ShelfName);
+    }
+
+    // Load now shelf
+    loadNewShelf "shelf_PrimeEngine.mel";
+
+    //Save all shelves
+    saveAllShelves $gShelfTopLevel;
+}
+UpdateShelf;

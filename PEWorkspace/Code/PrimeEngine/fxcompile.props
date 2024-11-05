@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(fxbuild_dx10BeforeTargets)' == '' and '$(fxbuild_dx10AfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <fxbuild_dx10BeforeTargets>Midl</fxbuild_dx10BeforeTargets>
+    <fxbuild_dx10AfterTargets>CustomBuild</fxbuild_dx10AfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <fxbuild_dx10DependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(fxbuild_dx10DependsOn)</fxbuild_dx10DependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <fxbuild_dx10>
+      <CommandLineTemplate>fxc  /D D3D10=1 /O3 /Gch /Tfx_4_0 /Fo"$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\%(Filename).fxo10" "%(FullPath)"</CommandLineTemplate>
+      <Outputs>$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\%(Filename).fxo10</Outputs>
+    </fxbuild_dx10>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(fxbuild_dx11BeforeTargets)' == '' and '$(fxbuild_dx11AfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <fxbuild_dx11BeforeTargets>Midl</fxbuild_dx11BeforeTargets>
+    <fxbuild_dx11AfterTargets>CustomBuild</fxbuild_dx11AfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <fxbuild_dx11DependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(fxbuild_dx11DependsOn)</fxbuild_dx11DependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <fxbuild_dx11>
+      <CommandLineTemplate>fxc  /D D3D11=1 /Od /Gch /Tfx_5_0 /Fo"$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\%(Filename).fxo11" "%(FullPath)"</CommandLineTemplate>
+      <Outputs>$(ProjectDir)\..\Pyengine2\Effects\D3D10_Effects\%(Filename).fxo11</Outputs>
+    </fxbuild_dx11>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(cgbuild_ps3_vsBeforeTargets)' == '' and '$(cgbuild_ps3_vsAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <cgbuild_ps3_vsBeforeTargets>Midl</cgbuild_ps3_vsBeforeTargets>
+    <cgbuild_ps3_vsAfterTargets>CustomBuild</cgbuild_ps3_vsAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <cgbuild_ps3_vsDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(cgbuild_ps3_vsDependsOn)</cgbuild_ps3_vsDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <cgbuild_ps3_vs>
+	  <CommandLineTemplate>"$(SCE_PSP2_SDK_DIR)\host_tools\bin\psp2cgc.exe" --cache --profile sce_vp_psp2 -DAPIABSTRACTION_PSVITA=1 "%(FullPath)" -o "%(RootDir)%(Directory)%(Filename).gxp"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)%(Filename).gxp</Outputs>
+      <ExecutionDescription>Compiling VS with SCE CGC and converting to PSVITA format</ExecutionDescription>
+    </cgbuild_ps3_vs>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(cgbuild_ps3_psBeforeTargets)' == '' and '$(cgbuild_ps3_psAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <cgbuild_ps3_psBeforeTargets>Midl</cgbuild_ps3_psBeforeTargets>
+    <cgbuild_ps3_psAfterTargets>CustomBuild</cgbuild_ps3_psAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <cgbuild_ps3_psDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(cgbuild_ps3_psDependsOn)</cgbuild_ps3_psDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <cgbuild_ps3_ps>
+      <CommandLineTemplate>"$(SCE_PSP2_SDK_DIR)\host_tools\bin\psp2cgc.exe" --cache --profile sce_fp_psp2 -DAPIABSTRACTION_PSVITA=1 "%(FullPath)" -o "%(RootDir)%(Directory)%(Filename).gxp"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)%(Filename).gxp</Outputs>
+      <ExecutionDescription>Compiling PS with SCE CGC and converting to PSVITA format</ExecutionDescription>
+    </cgbuild_ps3_ps>
+  </ItemDefinitionGroup>
+</Project>

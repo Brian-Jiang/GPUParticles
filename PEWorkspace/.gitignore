@@ -1,0 +1,10 @@
+build/
+build-intermediate/
+Code/.vs/
+Code/*.vcxproj
+Code/*.vcxproj.filters
+Code/*.vcxproj.user
+Code/*.sln
+Python26/**/*.pyc
+Tools/peuuid/*.pyc
+Tools/PyClient/*.pyc
