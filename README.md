@@ -3,6 +3,7 @@ This is a GPU-driven particle system built in C++ and DirectX 11, utilizing comp
 
 The result shows that with more than 1 million particles, only 2 dispatch and 1 draw call is used, and it runs 60 FPS on a machine with GTX 1080 and i7-8700K.
 <img src="Images/0.png" width="100%"/>
+<img src="Images/f1.gif" width="100%"/>
 
 # Resources Setup
 ## Particle Emitter Buffer
